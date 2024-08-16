@@ -42,7 +42,7 @@ jobs:
         run: |
           ls ./ -la
 
-      - name: Unzip artifact
+      # - name: Unzip artifact
   #       run: unzip output.zip
 
   #     - name: Return parsed JSON
