@@ -42,26 +42,23 @@ jobs:
         run: |
           ls ./ -la
 
-      # - name: Unzip artifact
-  #       run: unzip output.zip
+      - name: Return parsed JSON
+        uses: actions/github-script@v7
+        id: return-parsed-json
+        with:
+          script: |
+            let fs = require('fs');
+            let data = fs.readFileSync('./output.json');
+            return JSON.parse(data);
 
-  #     - name: Return parsed JSON
-  #       uses: actions/github-script@v7
-  #       id: return-parsed-json
-  #       with:
-  #         script: |
-  #           let fs = require('fs');
-  #           let data = fs.readFileSync('./output.json');
-  #           return JSON.parse(data);
+    outputs:
+      apply_result: ${{fromJSON(steps.return-parsed-json.outputs.result).exitcode}}
 
-  #   outputs:
-  #     apply_result: ${{fromJSON(steps.return-parsed-json.outputs.result).exitcode}}
-
-  # log_context_values:
-  #   needs:
-  #     - download_result_artifact
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Log Result Value
-  #       run: |
-  #         echo "${{ needs.download_result_artifact.outputs.apply_result }}"
+  log_context_values:
+    needs:
+      - download_result_artifact
+    runs-on: ubuntu-latest
+    steps:
+      - name: Log Result Value
+        run: |
+          echo "${{ needs.download_result_artifact.outputs.apply_result }}"
