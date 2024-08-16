@@ -1,0 +1,28 @@
+name: Workflow A
+on: 
+  push:
+    branches: [ "main" ]
+
+jobs: 
+  terraform-plan:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        shell: bash
+
+    steps: 
+      - name: Output Plan result
+        run: | 
+          mkdir ./result
+          printf '{
+            "exitcode": "2"
+          }' >> ./result/output.json
+      
+      - name: Upload results artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: output
+          path: ./result
+          retention-days: 1
+          overwrite: true

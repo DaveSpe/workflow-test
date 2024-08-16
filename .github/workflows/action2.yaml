@@ -1,0 +1,63 @@
+name: Workflow B
+on:
+  workflow_run:
+    workflows: [ 'Workflow A' ]
+    types: [ 'completed' ]
+jobs:
+  on-success: 
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    steps:
+      - run: echo 'The triggering workflow passed'
+  on-failure:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'failure' }}
+    steps:
+      - run: echo 'The triggering workflow failed'
+
+  # download_result_artifact:
+  #   if: ${{ github.event.workflow_run.conclusion == 'success' }}
+  #   runs-on: ubuntu-latest
+  #   env:
+  #     ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+  #     ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+  #     ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+  #     ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+  #     WORKING_DIR: cosmos_db_mongo
+  #     TF_VERSION: 1.8.4
+
+  #   defaults:
+  #     run:
+  #       shell: bash
+
+  #   steps:
+  #     - name: Download results artifact
+  #       uses: actions/download-artifact@v4
+  #       with:
+  #         name: ${{ env.WORKING_DIR }}
+  #         github-token: ${{ secrets.GITHUB_TOKEN }}
+  #         run-id: ${{ github.event.workflow_run.id }}
+
+  #     - name: Unzip artifact
+  #       run: unzip ${{ env.WORKING_DIR }}.zip
+
+  #     - name: Return parsed JSON
+  #       uses: actions/github-script@v7
+  #       id: return-parsed-json
+  #       with:
+  #         script: |
+  #           let fs = require('fs');
+  #           let data = fs.readFileSync('./${{ env.WORKING_DIR }}.json');
+  #           return JSON.parse(data);
+
+  #   outputs:
+  #     apply_result: ${{fromJSON(steps.return-parsed-json.outputs.result).exitcode}}
+
+  # log_context_values:
+  #   needs:
+  #     - download_result_artifact
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Log Result Value
+  #       run: |
+  #         echo "${{ needs.download_result_artifact.outputs.apply_result }}"
