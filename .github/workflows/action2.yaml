@@ -39,7 +39,7 @@ jobs:
           run-id: ${{ github.event.workflow_run.id }}
 
       - name: Unzip artifact
-        run: unzip ${{ env.WORKING_DIR }}.zip
+        run: unzip output.zip
 
       - name: Return parsed JSON
         uses: actions/github-script@v7
