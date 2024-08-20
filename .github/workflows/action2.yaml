@@ -4,8 +4,6 @@ on:
     workflows: [ 'Workflow A' ]
     types: [ 'completed' ]
 jobs:
-
-jobs:
   test-job:
     name: Test Step
     runs-on: ubuntu-latest
